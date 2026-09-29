@@ -4,8 +4,8 @@ on:
     branches: [main]
   workflow_dispatch:
 jobs:
-  deploy:
-    runs-on: [self-hosted, linux, ARM64]
+  build:
+    runs-on: ubuntu-24.04-arm
     permissions:
       contents: read
     steps:
@@ -22,14 +22,34 @@ jobs:
           pnpm install --frozen-lockfile
           pnpm exec tsc --noEmit
           pnpm build
+      - name: Preparar paquete
+        run: tar -czf "$RUNNER_TEMP/owens-build.tar.gz" .next/standalone .next/static public
+      - uses: actions/upload-artifact@v4
+        with:
+          name: owens-build
+          path: ${{ runner.temp }}/owens-build.tar.gz
+          if-no-files-found: error
+  deploy:
+    needs: build
+    runs-on: [self-hosted, linux, ARM64]
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: owens-build
+          path: ${{ runner.temp }}/owens-build
       - name: Publicar en Raspberry
         run: |
+          tar -xzf "$RUNNER_TEMP/owens-build/owens-build.tar.gz" -C "$RUNNER_TEMP/owens-build"
+          test -f "$RUNNER_TEMP/owens-build/.next/standalone/server.js"
           sudo /usr/bin/systemctl stop owens-fitness
           mkdir -p /home/sp/apps/OwensFitness
           rsync -a --delete --exclude='.env' --exclude='.git' --exclude='data/' --exclude='actions-runner/' --exclude='node_modules/' --exclude='.next/' ./ /home/sp/apps/OwensFitness/
           mkdir -p /home/sp/apps/OwensFitness/.next/standalone
-          rsync -a --delete .next/standalone/ /home/sp/apps/OwensFitness/.next/standalone/
-          rsync -a .next/static/ /home/sp/apps/OwensFitness/.next/standalone/.next/static/
-          rsync -a public/ /home/sp/apps/OwensFitness/.next/standalone/public/
+          rsync -a --delete "$RUNNER_TEMP/owens-build/.next/standalone/" /home/sp/apps/OwensFitness/.next/standalone/
+          rsync -a "$RUNNER_TEMP/owens-build/.next/static/" /home/sp/apps/OwensFitness/.next/standalone/.next/static/
+          rsync -a "$RUNNER_TEMP/owens-build/public/" /home/sp/apps/OwensFitness/.next/standalone/public/
           sudo /usr/bin/systemctl start owens-fitness
           curl --fail --silent --show-error --retry 10 --retry-delay 2 --retry-connrefused http://127.0.0.1:3012/OwensFitness/login > /dev/null
