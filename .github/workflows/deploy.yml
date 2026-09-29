@@ -32,4 +32,4 @@ jobs:
           rsync -a .next/static/ /home/sp/apps/OwensFitness/.next/standalone/.next/static/
           rsync -a public/ /home/sp/apps/OwensFitness/.next/standalone/public/
           sudo /usr/bin/systemctl start owens-fitness
-          curl --fail --silent --show-error --retry 10 --retry-delay 2 http://127.0.0.1:3012/OwensFitness/login > /dev/null
+          curl --fail --silent --show-error --retry 10 --retry-delay 2 --retry-connrefused http://127.0.0.1:3012/OwensFitness/login > /dev/null
