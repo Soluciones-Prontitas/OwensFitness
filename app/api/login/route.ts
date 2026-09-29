@@ -1,12 +1,46 @@
 import { newSession, validPassword } from '@/lib/auth';
+
 export const runtime = 'nodejs';
-const attempts=new Map<string,{count:number;until:number}>();
+const attempts = new Map<string, { count: number; until: number }>();
+const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
+
 export async function POST(request: Request) {
-  const address=request.headers.get('x-real-ip') || 'unknown';
-  const now=Date.now(), entry=attempts.get(address);
-  if(entry && entry.until>now && entry.count>=5)return Response.json({error:'Espera 15 minutos antes de intentar de nuevo'},{status:429});
-  try { const body:any=await request.json(); if (!validPassword(String(body.password || ''))) { const count=(entry && entry.until>now ? entry.count : 0)+1; attempts.set(address,{count,until:now+15*60*1000}); return Response.json({error:'Contraseña incorrecta'},{status:401}); }
+  const isForm = (request.headers.get('content-type') || '').includes('application/x-www-form-urlencoded');
+  const failure = (message: string, status: number, code: string) => isForm
+    ? Response.redirect(new URL(`${basePath}/login/?error=${code}`, request.url), 303)
+    : Response.json({ error: message }, { status });
+
+  const address = request.headers.get('x-real-ip') || request.headers.get('cf-connecting-ip') || 'unknown';
+  const now = Date.now();
+  const entry = attempts.get(address);
+  if (entry && entry.until > now && entry.count >= 5) {
+    return failure('Espera 15 minutos antes de intentar de nuevo', 429, 'locked');
+  }
+
+  try {
+    let input: string;
+    if (isForm) {
+      const form = await request.formData();
+      input = String(form.get('password') || '');
+    } else {
+      const body: unknown = await request.json();
+      input = body && typeof body === 'object' && 'password' in body ? String(body.password || '') : '';
+    }
+    if (!validPassword(input)) {
+      const count = (entry && entry.until > now ? entry.count : 0) + 1;
+      attempts.set(address, { count, until: now + 15 * 60 * 1000 });
+      return failure('Contraseña incorrecta', 401, 'invalid');
+    }
+
     attempts.delete(address);
-    const response=Response.json({ok:true}); response.headers.append('Set-Cookie',`owens_session=${newSession()}; Path=${process.env.NEXT_PUBLIC_BASE_PATH || '/'}; HttpOnly; Secure; SameSite=Lax; Max-Age=604800`); return response;
-  } catch(e) { console.error(e); return Response.json({error:'No se pudo iniciar sesión'},{status:500}); }
+    const response = isForm
+      ? Response.redirect(new URL(`${basePath}/`, request.url), 303)
+      : Response.json({ ok: true });
+    response.headers.append('Set-Cookie', `owens_session=${newSession()}; Path=${basePath || '/'}; HttpOnly; Secure; SameSite=Lax; Max-Age=604800`);
+    response.headers.set('Cache-Control', 'no-store');
+    return response;
+  } catch (error) {
+    console.error(error);
+    return failure('No se pudo iniciar sesión', 500, 'server');
+  }
 }
