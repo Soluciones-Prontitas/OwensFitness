@@ -21,8 +21,10 @@ export default function Login() {
         cache: 'no-store',
       });
       if (!response.ok) {
-        const result: { error?: string } | null = await response.json().catch(() => null);
-        throw new Error(typeof result?.error === 'string' ? result.error : 'No se pudo iniciar sesión');
+        const result: unknown = await response.json().catch(() => null);
+        const message = result && typeof result === 'object' && 'error' in result && typeof result.error === 'string'
+          ? result.error : 'No se pudo iniciar sesión';
+        throw new Error(message);
       }
       window.location.assign(`${basePath}/`);
     } catch (cause) {
