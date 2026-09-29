@@ -1,0 +1,34 @@
+name: Deploy Owen's Fitness
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+jobs:
+  deploy:
+    runs-on: [self-hosted, linux, ARM64]
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - uses: pnpm/action-setup@v4
+        with:
+          version: '11.25.0'
+          run_install: false
+      - name: Instalar, verificar y compilar
+        run: |
+          pnpm install --frozen-lockfile
+          pnpm exec tsc --noEmit
+          pnpm build
+      - name: Publicar en Raspberry
+        run: |
+          sudo /usr/bin/systemctl stop owens-fitness
+          mkdir -p /home/sp/apps/OwensFitness
+          rsync -a --delete --exclude='.env' --exclude='.git' --exclude='data/' --exclude='node_modules/' --exclude='.next/' ./ /home/sp/apps/OwensFitness/
+          rsync -a --delete .next/standalone/ /home/sp/apps/OwensFitness/.next/standalone/
+          rsync -a .next/static/ /home/sp/apps/OwensFitness/.next/standalone/.next/static/
+          rsync -a public/ /home/sp/apps/OwensFitness/.next/standalone/public/
+          sudo /usr/bin/systemctl start owens-fitness
+          curl --fail --silent --show-error --retry 10 --retry-delay 2 http://127.0.0.1:3012/OwensFitness/login > /dev/null

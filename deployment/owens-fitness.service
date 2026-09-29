@@ -1,0 +1,19 @@
+[Unit]
+Description=Owen's Fitness
+After=network.target
+[Service]
+Type=simple
+User=sp
+Group=sp
+WorkingDirectory=/home/sp/apps/OwensFitness/.next/standalone
+EnvironmentFile=/home/sp/apps/OwensFitness/.env
+Environment=NODE_ENV=production
+Environment=HOSTNAME=127.0.0.1
+Environment=PORT=3012
+ExecStart=/usr/bin/node server.js
+Restart=always
+RestartSec=3
+ProtectSystem=full
+ReadWritePaths=/home/sp/apps/OwensFitness
+[Install]
+WantedBy=multi-user.target

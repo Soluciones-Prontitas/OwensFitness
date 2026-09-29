@@ -1,0 +1,638 @@
+@import "tailwindcss";
+
+:root{color-scheme:dark;--background:#090a09;--foreground:#f5f5f4;--card:#151615;--card-foreground:#f5f5f4;--popover:#151615;--popover-foreground:#f5f5f4;--primary:#a5ed34;--primary-foreground:#101409;--secondary:#222421;--secondary-foreground:#f5f5f4;--muted:#242624;--muted-foreground:#a4a8a0;--accent:#28331c;--accent-foreground:#d5fbaa;--destructive:#f87171;--border:#2c2e2a;--input:#2c2e2a;--ring:#a5ed34;--radius:.8rem}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:#090a09;color:#f5f5f4;font-family:Arial,Helvetica,sans-serif}button,input,select,textarea{font:inherit}button{cursor:pointer}a{color:#a5ed34}h1,h2,p{margin-top:0}h1{font-size:clamp(2rem,4vw,3rem);line-height:1.12;letter-spacing:-.035em;margin-bottom:.5rem}h2{font-size:1.3rem;line-height:1.25}p{line-height:1.5;color:#a6a9a3}.app-shell{min-height:100vh;display:flex}.side{width:226px;flex:none;background:#101110;border-right:1px solid #252724;display:flex;flex-direction:column;position:sticky;top:0;height:100vh;padding:30px 15px}.brand{display:flex;align-items:center;gap:12px;font-size:13px;letter-spacing:.15em;line-height:1.25;margin:0 12px 46px}.brand b{font-size:17px;letter-spacing:.08em}.brand-mark{width:42px;height:42px;display:grid;place-items:center;background:#a5ed34;color:#111;border-radius:13px;font-size:27px;font-weight:900;letter-spacing:-.1em}.side nav{display:grid;gap:5px}.side nav button{width:100%;display:flex;align-items:center;gap:14px;background:none;border:0;border-radius:12px;color:#969a93;text-align:left;padding:14px;font-size:16px}.side nav button:hover,.side nav button.active{color:#a5ed34;background:#20271a}.side-foot{margin-top:auto;padding:14px;color:#737770;font-size:13px}.main{flex:1;min-width:0;max-width:1200px;margin:0 auto;padding:42px clamp(22px,5vw,66px) 100px}.page-head{display:flex;align-items:end;justify-content:space-between;gap:20px;margin-bottom:36px}.page-head p{margin:0;max-width:520px}.primary,.secondary{border:0;border-radius:10px;display:inline-flex;align-items:center;justify-content:center;gap:9px;padding:12px 18px;min-height:45px;font-weight:700;white-space:nowrap}.primary{background:#a5ed34;color:#101409}.primary:hover{background:#b9f65a}.primary:disabled{opacity:.5;cursor:wait}.secondary{background:#1c1f1b;color:#e5e8e1;border:1px solid #33372f}.secondary:hover{border-color:#a5ed34}.head-actions{display:flex;gap:8px;flex-wrap:wrap}.date-nav{display:flex;align-items:center;gap:18px;justify-content:center;text-transform:capitalize;font-size:18px;margin-bottom:26px}.date-nav button{border:0;background:none;color:#f4f4f4;padding:8px}.pill-tabs{background:#101110;border:1px solid #2a2c29;border-radius:99px;padding:4px;height:auto;display:inline-flex;gap:3px;margin-bottom:20px}.pill-tabs button{border-radius:99px;min-width:100px;color:#a0a49d;padding:9px 18px;font-size:15px}.pill-tabs button[data-state=active]{background:#a5ed34;color:#111}.legend{display:flex;flex-wrap:wrap;gap:9px 20px;margin:4px 0 25px;color:#a2a59e;font-size:14px}.legend span{display:flex;align-items:center;gap:8px}.legend i{width:11px;height:11px;border-radius:50%}.calendar{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:10px}.calendar.month{grid-template-columns:repeat(7,minmax(0,1fr))}.date-cell{background:#121312;border:1px solid #292b28;color:#f4f4f2;min-width:0;min-height:120px;border-radius:22px;display:flex;flex-direction:column;align-items:center;justify-content:space-around;padding:14px 4px}.date-cell.selected{border-color:#a5ed34;background:#1c2514}.date-cell small{font-size:13px;color:#8f938d;text-transform:uppercase}.date-cell b{font-size:23px}.event-dots{display:flex;gap:3px;min-height:7px}.event-dots i{width:6px;height:6px;border-radius:50%}.month .date-cell{min-height:74px;border-radius:13px}.month .date-cell b{font-size:17px}.day-list{margin-top:40px}.day-list h2{text-transform:capitalize}.empty{color:#92968e;padding:36px 0;font-size:16px}.list-card{display:flex;align-items:center;gap:15px;border:1px solid #2b2d29;background:#151615;border-radius:15px;padding:16px;margin:10px 0}.list-card>div:nth-child(2),.list-card>div:first-child{flex:1;min-width:0}.list-card p{margin:3px 0 0;font-size:14px}.session-stripe{height:44px;width:4px;border-radius:4px;flex:none}.actions{display:inline-flex;gap:2px;align-items:center;flex:none}.actions button,.icon-danger{background:transparent;border:0;color:#9ca098;padding:8px;border-radius:7px}.actions button:hover{color:#a5ed34;background:#262b20}.actions button:last-child:hover,.icon-danger:hover{color:#ff8e8e}.search{display:flex;align-items:center;gap:12px;background:#171817;border:1px solid #30322e;border-radius:12px;padding:0 15px;margin-bottom:24px;color:#858a82}.search input{width:100%;height:54px;background:transparent;border:0;color:#f5f5f4;outline:none}.cards{display:grid;gap:16px}.card,.metric,.product-card{border:1px solid #282a27;background:#151615;border-radius:22px}.card{padding:26px}.card-top{display:flex;align-items:center;justify-content:space-between;gap:12px}.card h2{margin:8px 0}.card p{margin:6px 0}.card small,.metric small{color:#8f938d}.card-meta{border-top:1px solid #2c2e2a;margin-top:18px;padding-top:15px;color:#adb2a9}.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}.tags span,.format{border:1px solid #354527;background:#202a19;border-radius:99px;color:#b9e880;padding:5px 10px;font-size:13px}.format{background:transparent;border-color:#284459;color:#74c7ef;text-transform:uppercase}.eyebrow{letter-spacing:.12em;text-transform:uppercase;color:#8d9189;font-size:12px}.filters{display:flex;flex-wrap:wrap;gap:7px;margin:5px 0 22px}.filters button{background:#121312;color:#a8aba5;border:1px solid #2d302b;border-radius:99px;padding:8px 13px;font-size:14px}.filters button.chosen{background:#243018;color:#b7ed7c;border-color:#405d28}.card ul{color:#c3c7c0;line-height:1.7;padding-left:20px;margin:14px 0}.metrics{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-bottom:25px}.metric{padding:26px;display:flex;flex-direction:column;gap:18px}.metric small{text-transform:uppercase;letter-spacing:.12em}.metric strong{font-weight:500;font-size:31px}.notice{padding:17px 20px;border-radius:15px;margin:15px 0 28px}.notice.amber{border:1px solid #594a22;background:#201b11;color:#f2d87e}.notice.error{border:1px solid #8f3939;background:#291818;color:#ffb0b0;display:flex;justify-content:space-between;align-items:center}.notice.error button{border:0;background:none;color:inherit}.status{color:#a5ed34}.product-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:17px}.product-card{overflow:hidden}.product-card>img,.product-image{width:100%;height:220px;object-fit:cover;background:#222521}.product-image{display:grid;place-items:center;color:#78826d}.product-body{padding:20px}.product-body h2{margin:6px 0}.product-bottom{display:flex;align-items:end;justify-content:space-between;gap:8px;margin-top:20px}.product-bottom strong{font-size:20px;font-weight:500}.product-bottom small{display:block;color:#8c9088;margin-top:3px}.order-items{margin:20px 0;border-block:1px solid #2e302c;padding:12px 0;display:grid;gap:8px}.order-items>div{display:flex;justify-content:space-between;gap:14px;color:#d0d3cd}.order-footer{display:flex;align-items:center;justify-content:space-between}.order-footer select{margin-left:8px;background:#222521;color:#e8ebe5;border:1px solid #3a3d37;border-radius:8px;padding:7px}.bottom-nav{display:none}.mobile-break{display:none}
+.editor{width:min(650px,calc(100vw - 24px));max-width:none;max-height:min(92vh,850px);overflow:auto;background:#0d0e0d;border:1px solid #2c2e2a;color:#f5f5f4;padding:28px}.editor [data-slot=dialog-title],.day-dialog [data-slot=dialog-title]{font-size:24px;text-align:center;margin-bottom:12px}.editor [data-slot=dialog-close],.day-dialog [data-slot=dialog-close]{color:#aaa}.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.field{min-width:0;display:flex;flex-direction:column;gap:7px;font-weight:600}.field span,.label{font-size:15px}.full{grid-column:1/-1}.field input,.field select,.field textarea,.form-grid .move-grid input,.form-grid .move-grid select,.variant-grid input{width:100%;min-width:0;border:1px solid #363934;border-radius:9px;background:#1b1c1b;color:#f2f2ee;padding:11px 13px;min-height:45px;outline:none}.field input:focus,.field select:focus,.field textarea:focus{border-color:#a5ed34}.field textarea{min-height:90px;resize:vertical}.check{display:flex;align-items:center;gap:10px}.check input{width:18px;height:18px;accent-color:#a5ed34}.save{grid-column:1/-1;width:100%;margin-top:7px}.move-grid{display:grid;grid-template-columns:minmax(110px,2fr) repeat(3,minmax(58px,1fr)) 30px;gap:6px;margin:10px 0}.move-grid button,.variant-grid button{border:0;background:none;color:#aaa}.variant-grid{display:grid;grid-template-columns:minmax(100px,1fr) 90px 30px;gap:7px;margin:10px 0}.day-dialog{background:#111;color:#f4f4f4;border-color:#30332d}.cart-row{display:flex;justify-content:space-between;align-items:center;gap:8px;border-bottom:1px solid #333;padding:7px 0}.cart-row>div{display:flex;align-items:center;gap:8px}.cart-row button{background:#222;border:1px solid #444;color:white;border-radius:6px;width:28px;height:28px;display:grid;place-items:center}
+@media(max-width:760px){.side{display:none}.main{padding:28px 20px 100px}.page-head{align-items:start;gap:13px;margin-bottom:28px}.page-head p{font-size:15px}.page-head .primary,.head-actions .secondary{padding:10px 12px;font-size:14px}.head-actions{justify-content:flex-end}.mobile-break{display:block}.calendar{gap:6px}.date-cell{min-height:100px;border-radius:17px}.date-cell small{font-size:11px}.date-cell b{font-size:20px}.bottom-nav{display:flex;position:fixed;bottom:0;left:0;right:0;background:#101110;border-top:1px solid #252824;z-index:20;justify-content:space-around;padding:8px 3px max(8px,env(safe-area-inset-bottom))}.bottom-nav button{min-width:0;flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;background:none;color:#848982;border:0;font-size:11px;padding:2px}.bottom-nav button.active{color:#a5ed34}.metrics{grid-template-columns:1fr 1fr}.metric{padding:17px}.metric strong{font-size:24px}.metric small{font-size:11px}.editor{padding:20px}.move-grid{grid-template-columns:repeat(3,minmax(0,1fr)) 29px}.move-grid select{grid-column:1/-1}.move-grid input{min-width:0}.move-grid button{grid-column:4;grid-row:2}.form-grid{gap:13px}}
+@media(max-width:430px){.main{padding:25px 16px 95px}.page-head h1{font-size:32px}.page-head .primary{font-size:13px}.date-cell{min-height:84px;padding:8px 2px}.date-cell small{font-size:10px}.date-cell b{font-size:18px}.legend{gap:7px 13px;font-size:12px}.pill-tabs button{min-width:75px}.metrics{gap:8px}.metric strong{font-size:21px}.list-card{flex-wrap:wrap}.form-grid{grid-template-columns:1fr}.field,.full{grid-column:1}.product-grid{grid-template-columns:1fr}.calendar.month .date-cell{min-height:54px}.calendar.month .date-cell small{display:none}}
+.login-page{min-height:100vh;display:grid;place-items:center;padding:2rem;background:#080808}.login-card{width:min(100%,390px);background:#151515;border:1px solid #2b2b2b;border-radius:20px;padding:2rem;display:grid;gap:1.4rem}.login-card .brand{margin-bottom:.5rem}.login-card h1{font-size:1.7rem}.login-card label{display:grid;gap:.5rem}.login-card input{padding:.8rem;border:1px solid #444;border-radius:10px;background:#1c1c1c;color:#fff}.login-card .primary{justify-content:center}.login-card p{color:#ff8b8b}
+
+@theme inline {
+  @keyframes accordion-down {
+    from {
+      height: 0;
+    }
+    to {
+      height: var(
+        --radix-accordion-content-height,
+        var(--accordion-panel-height, auto)
+      );
+    }
+  }
+
+  @keyframes accordion-up {
+    from {
+      height: var(
+        --radix-accordion-content-height,
+        var(--accordion-panel-height, auto)
+      );
+    }
+    to {
+      height: 0;
+    }
+  }
+}
+
+/* Custom variants */
+@custom-variant data-open {
+  &:where([data-state="open"]),
+  &:where([data-open]:not([data-open="false"])) {
+    @slot;
+  }
+}
+
+@custom-variant data-closed {
+  &:where([data-state="closed"]),
+  &:where([data-closed]:not([data-closed="false"])) {
+    @slot;
+  }
+}
+
+@custom-variant data-checked {
+  &:where([data-state="checked"]),
+  &:where([data-checked]:not([data-checked="false"])) {
+    @slot;
+  }
+}
+
+@custom-variant data-unchecked {
+  &:where([data-state="unchecked"]),
+  &:where([data-unchecked]:not([data-unchecked="false"])) {
+    @slot;
+  }
+}
+
+@custom-variant data-selected {
+  &:where([data-selected="true"]) {
+    @slot;
+  }
+}
+
+@custom-variant data-disabled {
+  &:where([data-disabled="true"]),
+  &:where([data-disabled]:not([data-disabled="false"])) {
+    @slot;
+  }
+}
+
+@custom-variant data-active {
+  &:where([data-state="active"]),
+  &:where([data-active]:not([data-active="false"])) {
+    @slot;
+  }
+}
+
+@custom-variant data-horizontal {
+  &:where([data-orientation="horizontal"]) {
+    @slot;
+  }
+}
+
+@custom-variant data-vertical {
+  &:where([data-orientation="vertical"]) {
+    @slot;
+  }
+}
+
+@utility no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* scroll-fade */
+@property --scroll-fade-t {
+  syntax: "<length-percentage>";
+  inherits: false;
+  initial-value: 0px;
+}
+@property --scroll-fade-b {
+  syntax: "<length-percentage>";
+  inherits: false;
+  initial-value: 0px;
+}
+@property --scroll-fade-s {
+  syntax: "<length-percentage>";
+  inherits: false;
+  initial-value: 0px;
+}
+@property --scroll-fade-e {
+  syntax: "<length-percentage>";
+  inherits: false;
+  initial-value: 0px;
+}
+@property --scroll-fade-mask {
+  syntax: "*";
+  inherits: false;
+}
+
+@theme inline {
+  @keyframes scroll-fade-reveal-t {
+    from {
+      --scroll-fade-t: 0px;
+    }
+    to {
+      --scroll-fade-t: var(--_scroll-fade-size-t, var(--scroll-fade-size, min(12%, calc(var(--spacing) * 10))));
+    }
+  }
+  @keyframes scroll-fade-reveal-b {
+    from {
+      --scroll-fade-b: var(--_scroll-fade-size-b, var(--scroll-fade-size, min(12%, calc(var(--spacing) * 10))));
+    }
+    to {
+      --scroll-fade-b: 0px;
+    }
+  }
+  @keyframes scroll-fade-reveal-s {
+    from {
+      --scroll-fade-s: 0px;
+    }
+    to {
+      --scroll-fade-s: var(--_scroll-fade-size-s, var(--scroll-fade-size, min(12%, calc(var(--spacing) * 10))));
+    }
+  }
+  @keyframes scroll-fade-reveal-e {
+    from {
+      --scroll-fade-e: var(--_scroll-fade-size-e, var(--scroll-fade-size, min(12%, calc(var(--spacing) * 10))));
+    }
+    to {
+      --scroll-fade-e: 0px;
+    }
+  }
+}
+
+@utility scroll-fade {
+  --_scroll-fade-size-t: var(
+    --scroll-fade-t-size,
+    var(--scroll-fade-size, min(12%, calc(var(--spacing) * 10)))
+  );
+  --_scroll-fade-size-b: var(
+    --scroll-fade-b-size,
+    var(--scroll-fade-size, min(12%, calc(var(--spacing) * 10)))
+  );
+  --scroll-fade-block: linear-gradient(
+    to bottom,
+    transparent 0,
+    #000 var(--scroll-fade-t, 0px),
+    #000 calc(100% - var(--scroll-fade-b, 0px)),
+    transparent 100%
+  );
+  -webkit-mask-image: var(--scroll-fade-mask, var(--scroll-fade-block));
+  mask-image: var(--scroll-fade-mask, var(--scroll-fade-block));
+  -webkit-mask-composite: source-in;
+  mask-composite: intersect;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+
+  @supports (animation-timeline: scroll()) {
+    animation:
+      scroll-fade-reveal-t 1ms ease-in-out,
+      scroll-fade-reveal-b 1ms ease-in-out;
+    animation-timeline: scroll(self y), scroll(self y);
+    animation-range:
+      0 var(--scroll-fade-reveal, calc(var(--spacing) * 24)),
+      calc(100% - var(--scroll-fade-reveal, calc(var(--spacing) * 24))) 100%;
+    animation-fill-mode: both;
+  }
+
+  @supports not (animation-timeline: scroll()) {
+    --scroll-fade-t: var(--_scroll-fade-size-t);
+    --scroll-fade-b: var(--_scroll-fade-size-b);
+  }
+}
+
+@utility scroll-fade-y {
+  --_scroll-fade-size-t: var(
+    --scroll-fade-t-size,
+    var(--scroll-fade-size, min(12%, calc(var(--spacing) * 10)))
+  );
+  --_scroll-fade-size-b: var(
+    --scroll-fade-b-size,
+    var(--scroll-fade-size, min(12%, calc(var(--spacing) * 10)))
+  );
+  --scroll-fade-block: linear-gradient(
+    to bottom,
+    transparent 0,
+    #000 var(--scroll-fade-t, 0px),
+    #000 calc(100% - var(--scroll-fade-b, 0px)),
+    transparent 100%
+  );
+  -webkit-mask-image: var(--scroll-fade-mask, var(--scroll-fade-block));
+  mask-image: var(--scroll-fade-mask, var(--scroll-fade-block));
+  -webkit-mask-composite: source-in;
+  mask-composite: intersect;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+
+  @supports (animation-timeline: scroll()) {
+    animation:
+      scroll-fade-reveal-t 1ms ease-in-out,
+      scroll-fade-reveal-b 1ms ease-in-out;
+    animation-timeline: scroll(self y), scroll(self y);
+    animation-range:
+      0 var(--scroll-fade-reveal, calc(var(--spacing) * 24)),
+      calc(100% - var(--scroll-fade-reveal, calc(var(--spacing) * 24))) 100%;
+    animation-fill-mode: both;
+  }
+
+  @supports not (animation-timeline: scroll()) {
+    --scroll-fade-t: var(--_scroll-fade-size-t);
+    --scroll-fade-b: var(--_scroll-fade-size-b);
+  }
+}
+
+@utility scroll-fade-x {
+  --_scroll-fade-size-s: var(
+    --scroll-fade-s-size,
+    var(--scroll-fade-size, min(12%, calc(var(--spacing) * 10)))
+  );
+  --_scroll-fade-size-e: var(
+    --scroll-fade-e-size,
+    var(--scroll-fade-size, min(12%, calc(var(--spacing) * 10)))
+  );
+  --scroll-fade-inline: linear-gradient(
+    to right,
+    transparent 0,
+    #000 var(--scroll-fade-s, 0px),
+    #000 calc(100% - var(--scroll-fade-e, 0px)),
+    transparent 100%
+  );
+  &:where([dir="rtl"], [dir="rtl"] *) {
+    --scroll-fade-inline: linear-gradient(
+      to left,
+      transparent 0,
+      #000 var(--scroll-fade-s, 0px),
+      #000 calc(100% - var(--scroll-fade-e, 0px)),
+      transparent 100%
+    );
+  }
+  -webkit-mask-image: var(--scroll-fade-mask, var(--scroll-fade-inline));
+  mask-image: var(--scroll-fade-mask, var(--scroll-fade-inline));
+  -webkit-mask-composite: source-in;
+  mask-composite: intersect;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+
+  @supports (animation-timeline: scroll()) {
+    animation:
+      scroll-fade-reveal-s 1ms ease-in-out,
+      scroll-fade-reveal-e 1ms ease-in-out;
+    animation-timeline: scroll(self inline), scroll(self inline);
+    animation-range:
+      0 var(--scroll-fade-reveal, calc(var(--spacing) * 24)),
+      calc(100% - var(--scroll-fade-reveal, calc(var(--spacing) * 24))) 100%;
+    animation-fill-mode: both;
+  }
+
+  @supports not (animation-timeline: scroll()) {
+    --scroll-fade-s: var(--_scroll-fade-size-s);
+    --scroll-fade-e: var(--_scroll-fade-size-e);
+  }
+}
+
+@utility scroll-fade-t {
+  --_scroll-fade-size-t: var(
+    --scroll-fade-t-size,
+    var(--scroll-fade-size, min(12%, calc(var(--spacing) * 10)))
+  );
+  --scroll-fade-mask: linear-gradient(
+    to bottom,
+    transparent 0,
+    #000 var(--scroll-fade-t, 0px),
+    #000 100%
+  );
+  -webkit-mask-image: var(--scroll-fade-mask);
+  mask-image: var(--scroll-fade-mask);
+  -webkit-mask-composite: source-in;
+  mask-composite: intersect;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+
+  @supports (animation-timeline: scroll()) {
+    animation: scroll-fade-reveal-t 1ms ease-in-out;
+    animation-timeline: scroll(self y);
+    animation-range: 0 var(--scroll-fade-reveal, calc(var(--spacing) * 24));
+    animation-fill-mode: both;
+  }
+
+  @supports not (animation-timeline: scroll()) {
+    --scroll-fade-t: var(--_scroll-fade-size-t);
+  }
+}
+
+@utility scroll-fade-b {
+  --_scroll-fade-size-b: var(
+    --scroll-fade-b-size,
+    var(--scroll-fade-size, min(12%, calc(var(--spacing) * 10)))
+  );
+  --scroll-fade-mask: linear-gradient(
+    to bottom,
+    #000 0,
+    #000 calc(100% - var(--scroll-fade-b, 0px)),
+    transparent 100%
+  );
+  -webkit-mask-image: var(--scroll-fade-mask);
+  mask-image: var(--scroll-fade-mask);
+  -webkit-mask-composite: source-in;
+  mask-composite: intersect;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+
+  @supports (animation-timeline: scroll()) {
+    animation: scroll-fade-reveal-b 1ms ease-in-out;
+    animation-timeline: scroll(self y);
+    animation-range: calc(
+        100% - var(--scroll-fade-reveal, calc(var(--spacing) * 24))
+      )
+      100%;
+    animation-fill-mode: both;
+  }
+
+  @supports not (animation-timeline: scroll()) {
+    --scroll-fade-b: var(--_scroll-fade-size-b);
+  }
+}
+
+@utility scroll-fade-l {
+  --_scroll-fade-size-s: var(
+    --scroll-fade-s-size,
+    var(--scroll-fade-size, min(12%, calc(var(--spacing) * 10)))
+  );
+  --scroll-fade-mask: linear-gradient(
+    to right,
+    transparent 0,
+    #000 var(--scroll-fade-s, 0px),
+    #000 100%
+  );
+  -webkit-mask-image: var(--scroll-fade-mask);
+  mask-image: var(--scroll-fade-mask);
+  -webkit-mask-composite: source-in;
+  mask-composite: intersect;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+
+  @supports (animation-timeline: scroll()) {
+    animation: scroll-fade-reveal-s 1ms ease-in-out;
+    animation-timeline: scroll(self x);
+    animation-range: 0 var(--scroll-fade-reveal, calc(var(--spacing) * 24));
+    animation-fill-mode: both;
+  }
+
+  @supports not (animation-timeline: scroll()) {
+    --scroll-fade-s: var(--_scroll-fade-size-s);
+  }
+}
+
+@utility scroll-fade-r {
+  --_scroll-fade-size-e: var(
+    --scroll-fade-e-size,
+    var(--scroll-fade-size, min(12%, calc(var(--spacing) * 10)))
+  );
+  --scroll-fade-mask: linear-gradient(
+    to right,
+    #000 0,
+    #000 calc(100% - var(--scroll-fade-e, 0px)),
+    transparent 100%
+  );
+  -webkit-mask-image: var(--scroll-fade-mask);
+  mask-image: var(--scroll-fade-mask);
+  -webkit-mask-composite: source-in;
+  mask-composite: intersect;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+
+  @supports (animation-timeline: scroll()) {
+    animation: scroll-fade-reveal-e 1ms ease-in-out;
+    animation-timeline: scroll(self x);
+    animation-range: calc(
+        100% - var(--scroll-fade-reveal, calc(var(--spacing) * 24))
+      )
+      100%;
+    animation-fill-mode: both;
+  }
+
+  @supports not (animation-timeline: scroll()) {
+    --scroll-fade-e: var(--_scroll-fade-size-e);
+  }
+}
+
+@utility scroll-fade-s {
+  --_scroll-fade-size-s: var(
+    --scroll-fade-s-size,
+    var(--scroll-fade-size, min(12%, calc(var(--spacing) * 10)))
+  );
+  --scroll-fade-mask: linear-gradient(
+    to right,
+    transparent 0,
+    #000 var(--scroll-fade-s, 0px),
+    #000 100%
+  );
+  &:where([dir="rtl"], [dir="rtl"] *) {
+    --scroll-fade-mask: linear-gradient(
+      to left,
+      transparent 0,
+      #000 var(--scroll-fade-s, 0px),
+      #000 100%
+    );
+  }
+  -webkit-mask-image: var(--scroll-fade-mask);
+  mask-image: var(--scroll-fade-mask);
+  -webkit-mask-composite: source-in;
+  mask-composite: intersect;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+
+  @supports (animation-timeline: scroll()) {
+    animation: scroll-fade-reveal-s 1ms ease-in-out;
+    animation-timeline: scroll(self inline);
+    animation-range: 0 var(--scroll-fade-reveal, calc(var(--spacing) * 24));
+    animation-fill-mode: both;
+  }
+
+  @supports not (animation-timeline: scroll()) {
+    --scroll-fade-s: var(--_scroll-fade-size-s);
+  }
+}
+
+@utility scroll-fade-e {
+  --_scroll-fade-size-e: var(
+    --scroll-fade-e-size,
+    var(--scroll-fade-size, min(12%, calc(var(--spacing) * 10)))
+  );
+  --scroll-fade-mask: linear-gradient(
+    to right,
+    #000 0,
+    #000 calc(100% - var(--scroll-fade-e, 0px)),
+    transparent 100%
+  );
+  &:where([dir="rtl"], [dir="rtl"] *) {
+    --scroll-fade-mask: linear-gradient(
+      to left,
+      #000 0,
+      #000 calc(100% - var(--scroll-fade-e, 0px)),
+      transparent 100%
+    );
+  }
+  -webkit-mask-image: var(--scroll-fade-mask);
+  mask-image: var(--scroll-fade-mask);
+  -webkit-mask-composite: source-in;
+  mask-composite: intersect;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+
+  @supports (animation-timeline: scroll()) {
+    animation: scroll-fade-reveal-e 1ms ease-in-out;
+    animation-timeline: scroll(self inline);
+    animation-range: calc(
+        100% - var(--scroll-fade-reveal, calc(var(--spacing) * 24))
+      )
+      100%;
+    animation-fill-mode: both;
+  }
+
+  @supports not (animation-timeline: scroll()) {
+    --scroll-fade-e: var(--_scroll-fade-size-e);
+  }
+}
+
+@utility scroll-fade-* {
+  --scroll-fade-size: calc(var(--spacing) * --value(integer));
+  --scroll-fade-size: --value([length], [percentage]);
+}
+
+@utility scroll-fade-t-* {
+  --scroll-fade-t-size: calc(var(--spacing) * --value(integer));
+  --scroll-fade-t-size: --value([length], [percentage]);
+}
+
+@utility scroll-fade-b-* {
+  --scroll-fade-b-size: calc(var(--spacing) * --value(integer));
+  --scroll-fade-b-size: --value([length], [percentage]);
+}
+
+@utility scroll-fade-s-* {
+  --scroll-fade-s-size: calc(var(--spacing) * --value(integer));
+  --scroll-fade-s-size: --value([length], [percentage]);
+}
+
+@utility scroll-fade-e-* {
+  --scroll-fade-e-size: calc(var(--spacing) * --value(integer));
+  --scroll-fade-e-size: --value([length], [percentage]);
+}
+
+@utility scroll-fade-none {
+  --scroll-fade-mask: none;
+}
+
+/* shimmer */
+@property --shimmer-angle {
+  syntax: "<angle>";
+  inherits: true;
+  initial-value: 20deg;
+}
+@property --shimmer-image {
+  syntax: "*";
+  inherits: false;
+}
+@property --shimmer-text-fill {
+  syntax: "*";
+  inherits: false;
+}
+
+@theme inline {
+  @keyframes tw-shimmer {
+    from {
+      background-position: 100% 0;
+    }
+    to {
+      background-position: 0 0;
+    }
+  }
+}
+
+@utility shimmer {
+  --_spread: var(--shimmer-spread, calc(3ch + 40px));
+  --_base: currentColor;
+  --_highlight: var(
+    --shimmer-color,
+    oklch(from currentColor l c h / calc(alpha* 0.2))
+  );
+
+  background-image: var(
+    --shimmer-image,
+    linear-gradient(
+      calc(90deg + var(--shimmer-angle)),
+      var(--_base) calc(50% - var(--_spread)),
+      color-mix(in oklch, var(--_highlight), var(--_base) 50%)
+        calc(50% - var(--_spread) * 0.5),
+      var(--_highlight) 50%,
+      color-mix(in oklch, var(--_highlight), var(--_base) 50%)
+        calc(50% + var(--_spread) * 0.5),
+      var(--_base) calc(50% + var(--_spread))
+    )
+  );
+  background-repeat: no-repeat;
+  background-size: calc(200% + var(--_spread) * 2) 100%;
+  background-position: 0 0;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: var(--shimmer-text-fill, transparent);
+  animation: tw-shimmer var(--shimmer-duration, 2s) linear infinite;
+
+  @variant dark {
+    --_highlight: var(
+      --shimmer-color,
+      oklch(from currentColor max(0.8, calc(l + 0.4)) c h / calc(alpha + 0.4))
+    );
+  }
+
+  &:where([dir="rtl"], [dir="rtl"] *) {
+    animation-direction: reverse;
+  }
+}
+
+@utility shimmer-once {
+  animation-iteration-count: 1;
+}
+
+@utility shimmer-reverse {
+  animation-direction: reverse;
+}
+
+@utility shimmer-none {
+  --shimmer-image: none;
+  --shimmer-text-fill: currentColor;
+}
+
+@utility shimmer-color-* {
+  --shimmer-color: --value(--color, [color]);
+  --shimmer-color: color-mix(
+    in oklch,
+    --value(--color, [color]) calc(--modifier(integer) * 1%),
+    transparent
+  );
+}
+
+@utility shimmer-duration-* {
+  --shimmer-duration: calc(--value(integer) * 1ms);
+}
+
+@utility shimmer-spread-* {
+  --shimmer-spread: calc(var(--spacing) * --value(integer));
+  --shimmer-spread: --value([length], [percentage]);
+}
+
+@utility shimmer-angle-* {
+  --shimmer-angle: calc(--value(integer) * 1deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shimmer {
+    animation: none;
+    background-image: none;
+    -webkit-text-fill-color: currentColor;
+  }
+}
