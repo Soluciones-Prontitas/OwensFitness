@@ -27,6 +27,7 @@ jobs:
           sudo /usr/bin/systemctl stop owens-fitness
           mkdir -p /home/sp/apps/OwensFitness
           rsync -a --delete --exclude='.env' --exclude='.git' --exclude='data/' --exclude='actions-runner/' --exclude='node_modules/' --exclude='.next/' ./ /home/sp/apps/OwensFitness/
+          mkdir -p /home/sp/apps/OwensFitness/.next/standalone
           rsync -a --delete .next/standalone/ /home/sp/apps/OwensFitness/.next/standalone/
           rsync -a .next/static/ /home/sp/apps/OwensFitness/.next/standalone/.next/static/
           rsync -a public/ /home/sp/apps/OwensFitness/.next/standalone/public/
