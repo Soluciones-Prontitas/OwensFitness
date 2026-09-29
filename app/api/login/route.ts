@@ -7,7 +7,7 @@ const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
 export async function POST(request: Request) {
   const isForm = (request.headers.get('content-type') || '').includes('application/x-www-form-urlencoded');
   const failure = (message: string, status: number, code: string) => isForm
-    ? Response.redirect(new URL(`${basePath}/login/?error=${code}`, request.url), 303)
+    ? new Response(null, { status: 303, headers: { Location: `${basePath}/login/?error=${code}` } })
     : Response.json({ error: message }, { status });
 
   const address = request.headers.get('x-real-ip') || request.headers.get('cf-connecting-ip') || 'unknown';
@@ -34,7 +34,7 @@ export async function POST(request: Request) {
 
     attempts.delete(address);
     const response = isForm
-      ? Response.redirect(new URL(`${basePath}/`, request.url), 303)
+      ? new Response(null, { status: 303, headers: { Location: `${basePath}/` } })
       : Response.json({ ok: true });
     response.headers.append('Set-Cookie', `owens_session=${newSession()}; Path=${basePath || '/'}; HttpOnly; Secure; SameSite=Lax; Max-Age=604800`);
     response.headers.set('Cache-Control', 'no-store');
