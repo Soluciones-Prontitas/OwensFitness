@@ -4,3 +4,4 @@ node_modules/
 *.sqlite*
 *.log
 *.tsbuildinfo
+__pycache__/

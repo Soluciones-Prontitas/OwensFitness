@@ -24,6 +24,7 @@ jobs:
           pnpm install --frozen-lockfile
           pnpm exec tsc --noEmit
           pnpm test:permissions
+          python3 -m unittest discover -s tests -p 'test_demo.py' -v
           pnpm build
           pnpm test:http
       - name: Preparar paquete

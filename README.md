@@ -74,3 +74,35 @@ pnpm test:http
 ```
 
 Las pruebas usan una base temporal y verifican la migración, aislamiento entre instructores, bloqueo del soporte, acceso por alumno, referencias entre propietarios, contraseñas y revocación de sesiones. La comprobación real de Google requiere las credenciales y completar el consentimiento con cada cuenta; no se simula como un acceso de producción exitoso.
+
+
+## Datos de prueba DEMO
+
+Tras publicar el script, cargar los ejemplos en la Raspberry con:
+
+```bash
+python3 /home/sp/apps/OwensFitness/deployment/seed-demo.py --with-users
+```
+
+El comando pide una contraseña temporal de al menos 12 caracteres, oculta en la terminal. Crea 52 registros vinculados y, con `--with-users`, seis cuentas de alumnos con roles exclusivos de alumno y cambio de contraseña obligatorio. Imprime los usuarios creados; la contraseña no se imprime ni se guarda en texto claro. El acceso de administración, Google y soporte conserva sus cuentas actuales. Sin `--with-users`, solo se crean los registros.
+
+| Sección | Ejemplos |
+| --- | ---: |
+| Atletas | 6 fichas ficticias |
+| Rutinas | 12 ejercicios, dos por categoría; 4 estructuras |
+| Agenda | 8 sesiones pasadas/actuales/futuras y 1 bloqueo |
+| Finanzas | 6 cobros pagados/pendientes con distintas formas de pago |
+| Productos | 6 productos con variantes, stock y programas digitales |
+| Pedidos | 6 pedidos: Pendiente, Pagado, Preparando, Listo, Entregado y Cancelado |
+| Avances | 3 registros vinculados a atletas y sesiones asignadas |
+| Usuarios (opcional) | 6 cuentas de alumnos DEMO |
+
+Los nombres, títulos, conceptos y notas identificadores comienzan con `DEMO`. Se conservan las categorías y estados reconocidos por los filtros. Las fechas se calculan al momento de cargar, con zona America/Mexico_City. Todos los registros quedan asignados a Pepe (`instructor-pepe`); se puede indicar otro instructor activo mediante `--owner ID`.
+
+La carga verifica que la base ya exista, lee únicamente `SQLITE_PATH` de `.env`, usa una transacción y no modifica registros reales. Repetirla omite los DEMO existentes, conserva sus modificaciones y no restablece contraseñas. No envía correos, procesa pagos ni crea cuentas administrativas. Los registros DEMO aparecerán en las mismas vistas y sumas que los demás registros.
+
+Para comprobar el generador sin tocar producción:
+
+```bash
+python3 -m unittest discover -s tests -p 'test_demo.py' -v
+```
