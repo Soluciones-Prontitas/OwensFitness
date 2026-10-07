@@ -9,7 +9,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start -H 127.0.0.1 -p 3012",
-    "lint": "eslint app components lib hooks"
+    "lint": "eslint app components lib hooks",
+    "test:permissions": "bash scripts/test-permissions.sh",
+    "test:http": "bash scripts/test-http.sh"
   },
   "dependencies": {
     "@base-ui/react": "^1.7.0",
@@ -21,6 +23,7 @@
     "date-fns": "^4.4.0",
     "drizzle-orm": "0.45.2",
     "embla-carousel-react": "^8.6.0",
+    "google-auth-library": "^11.1.0",
     "input-otp": "^1.4.2",
     "lucide-react": "^1.31.0",
     "next": "16.3.4",

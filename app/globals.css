@@ -636,3 +636,18 @@
     -webkit-text-fill-color: currentColor;
   }
 }
+
+/* Accounts, Google login and individual workspaces. */
+.google-login{display:flex;justify-content:center;text-decoration:none;margin:16px 0}
+.login-card form{display:grid;gap:14px}.login-card hr{border:0;border-top:1px solid #ffffff22;margin:22px 0}
+.login-card h2{font-size:1.05rem}.support-login{margin-top:24px}.support-login summary{cursor:pointer;font-size:.85rem}.support-login form{margin-top:16px}.muted{opacity:.7}
+.workspace-picker{display:flex;align-items:center;gap:12px;margin-bottom:24px;flex-wrap:wrap}.workspace-picker select{max-width:100%;min-width:220px}
+.account-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}.account-actions fieldset{width:100%;border:1px solid #ffffff22;border-radius:8px;padding:10px}
+.student-shell{max-width:1100px;margin:auto;padding:32px 20px}.student-shell .cards{margin-bottom:24px}.student-shell textarea{min-height:90px}
+.progress-entry{margin-top:12px;padding:10px;border-left:3px solid #a5ed34;background:#ffffff06;white-space:pre-wrap;overflow-wrap:anywhere}
+@media(max-width:700px){.workspace-picker{font-size:.9rem}.student-shell{padding:20px 14px}.student-shell .page-head{flex-wrap:wrap}.account-actions .secondary{font-size:.85rem}.login-card{margin:16px 0}}
+.workspace-picker select{background:#1b1c1b;color:#f2f2ee;border:1px solid #363934;border-radius:9px;padding:10px}
+.login-card>p{color:#a6a9a3}.login-card .notice.error{color:#ff8b8b}
+@media(max-width:760px){.bottom-nav{overflow-x:auto;justify-content:flex-start!important;gap:6px}.bottom-nav button{flex:0 0 auto;min-width:58px;min-height:44px}.account-actions fieldset .check{min-height:32px}}
+.support-login .secondary{white-space:normal;width:100%}.student-shell .head-actions button{white-space:normal}
+.mobile-account{display:none}@media(max-width:760px){.mobile-account{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:20px;color:#a6a9a3;font-size:.85rem}.mobile-account .secondary{min-height:36px;padding:8px 12px;font-size:.8rem}}
