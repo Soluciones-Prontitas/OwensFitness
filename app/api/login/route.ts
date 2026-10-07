@@ -1,46 +1,31 @@
-import { newSession, validPassword } from '@/lib/auth';
-
+import { attachSession, basePath, clearAttempts, failedAttempt, locked, loginKey, sameOrigin, validPassword } from '@/lib/auth';
+import { readBody } from '@/lib/http';
+import { db } from '@/lib/database';
+import { verifyPassword, type UserRow } from '@/lib/accounts';
+import { LOCAL_ID } from '@/lib/roles';
 export const runtime = 'nodejs';
-const attempts = new Map<string, { count: number; until: number }>();
-const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
-
 export async function POST(request: Request) {
   const isForm = (request.headers.get('content-type') || '').includes('application/x-www-form-urlencoded');
-  const failure = (message: string, status: number, code: string) => isForm
-    ? new Response(null, { status: 303, headers: { Location: `${basePath}/login/?error=${code}` } })
-    : Response.json({ error: message }, { status });
-
-  const address = request.headers.get('x-real-ip') || request.headers.get('cf-connecting-ip') || 'unknown';
-  const now = Date.now();
-  const entry = attempts.get(address);
-  if (entry && entry.until > now && entry.count >= 5) {
-    return failure('Espera 15 minutos antes de intentar de nuevo', 429, 'locked');
-  }
-
+  const failure = (message:string,status:number,code:string) => isForm ? new Response(null,{status:303,headers:{Location:`${basePath}/login/?error=${code}`,'Cache-Control':'no-store'}}) : Response.json({error:message},{status});
+  if(!sameOrigin(request)) return failure('Origen no permitido',403,'origin');
   try {
-    let input: string;
-    if (isForm) {
-      const form = await request.formData();
-      input = String(form.get('password') || '');
-    } else {
-      const body: unknown = await request.json();
-      input = body && typeof body === 'object' && 'password' in body ? String(body.password || '') : '';
+    const body:Record<string,any> = isForm ? Object.fromEntries(await request.formData()) : await readBody(request);
+    const username = String(body.username || '').trim().toLowerCase();
+    const password = typeof body.password === 'string' ? body.password : '';
+    const key=loginKey(request,username), ipKey=loginKey(request,'*');
+    if(locked(key)||locked(ipKey))return failure('Espera 15 minutos antes de intentar de nuevo',429,'locked');
+    if(password.length>256)return failure('Usuario o contraseña incorrectos',401,'invalid');
+    // The existing password-only form remains the local administration/support access.
+    let userId:string|null=null;
+    if(!username) { if(validPassword(password))userId=LOCAL_ID; }
+    else {
+      const row=db().prepare('SELECT * FROM users WHERE username=?').get(username) as UserRow|undefined;
+      const matches=await verifyPassword(password,row?.password_hash || null);
+      if(matches&&row?.active&&JSON.parse(row.roles).includes('student'))userId=row.id;
     }
-    if (!validPassword(input)) {
-      const count = (entry && entry.until > now ? entry.count : 0) + 1;
-      attempts.set(address, { count, until: now + 15 * 60 * 1000 });
-      return failure('Contraseña incorrecta', 401, 'invalid');
-    }
-
-    attempts.delete(address);
-    const response = isForm
-      ? new Response(null, { status: 303, headers: { Location: `${basePath}/` } })
-      : Response.json({ ok: true });
-    response.headers.append('Set-Cookie', `owens_session=${newSession()}; Path=${basePath || '/'}; HttpOnly; Secure; SameSite=Lax; Max-Age=604800`);
-    response.headers.set('Cache-Control', 'no-store');
-    return response;
-  } catch (error) {
-    console.error(error);
-    return failure('No se pudo iniciar sesión', 500, 'server');
-  }
+    if(!userId){failedAttempt(key);failedAttempt(ipKey);return failure('Usuario o contraseña incorrectos',401,'invalid');}
+    clearAttempts(key); clearAttempts(ipKey);
+    const response=isForm?new Response(null,{status:303,headers:{Location:`${basePath}/`}}):Response.json({ok:true});
+    return attachSession(response,userId);
+  } catch { return failure('No se pudo iniciar sesión',500,'server'); }
 }

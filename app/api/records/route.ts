@@ -1,22 +1,45 @@
-import { authorized } from '@/lib/auth';
+import { readBody } from '@/lib/http';
+import { currentUser, sameOrigin } from '@/lib/auth';
 import { db } from '@/lib/database';
-export const runtime = 'nodejs';
-const kinds = new Set(['athlete','exercise','structure','session','payment','product','order']);
-const deny = () => Response.json({error:'Acceso requerido'},{status:401});
-const fail = (error: unknown) => { console.error('records',error); return Response.json({error:'No se pudieron guardar o cargar los datos.'},{status:503}); };
-type Row = {id:string; kind:string; data:string; created_at:number};
-export async function GET() {
-  if (!(await authorized())) return deny();
-  try { const rows=db().prepare('SELECT id,kind,data,created_at FROM records WHERE owner_id=? ORDER BY created_at DESC').all('admin') as Row[]; return Response.json({records:rows.map(r=>({...JSON.parse(r.data),id:r.id,kind:r.kind,createdAt:r.created_at}))}); } catch(e) { return fail(e); }
+import { hasRole, managesTraining } from '@/lib/roles';
+import { AccessError,cleanData,kinds,publicRecord,rowsFor,studentProgress,trainingOwner,validateReferences,type RecordRow } from '@/lib/record-access';
+export const runtime='nodejs';
+const deny=()=>Response.json({error:'Acceso requerido'},{status:401});
+const fail=(error:unknown)=>error instanceof AccessError?Response.json({error:error.message},{status:error.status}):Response.json({error:'No se pudieron guardar o cargar los datos.'},{status:503});
+export async function GET(request:Request){const user=await currentUser();if(!user)return deny();try{return Response.json({records:rowsFor(user,new URL(request.url).searchParams.get('ownerId')||undefined).map(row=>publicRecord(row,user))},{headers:{'Cache-Control':'no-store'}});}catch(e){return fail(e);}}
+export async function POST(request:Request){
+  const user=await currentUser();if(!user)return deny();if(!sameOrigin(request))return Response.json({error:'Origen no permitido'},{status:403});
+  try {
+    if(user.mustChangePassword)throw new AccessError('Cambia tu contraseña temporal');
+    const body=await readBody(request);if(!kinds.has(body.kind))throw new AccessError('Registro inválido',400);
+    const student=hasRole(user,'student');
+    if(student&&body.kind!=='progress')throw new AccessError('Solo puedes registrar tus avances');
+    if(!student&&!managesTraining(user))throw new AccessError('Este perfil no puede guardar datos del gimnasio');
+    const owner=student?user.instructorId!:trainingOwner(user,body.ownerId),data=student?studentProgress(user,body.data):cleanData(body.data);
+    validateReferences(body.kind,data,owner);
+    const row:RecordRow={id:crypto.randomUUID(),owner_id:owner,kind:body.kind,data:JSON.stringify(data),created_at:Date.now()};
+    db().prepare('INSERT INTO records(id,owner_id,kind,data,created_at) VALUES(?,?,?,?,?)').run(row.id,owner,row.kind,row.data,row.created_at);
+    return Response.json({record:publicRecord(row,user)},{status:201});
+  }catch(e){return fail(e);}
 }
-export async function POST(request:Request) {
-  if (!(await authorized())) return deny();
-  try { const body:any=await request.json(); if(!kinds.has(body.kind)||!body.data||typeof body.data!=='object'||Array.isArray(body.data)) return Response.json({error:'Registro inválido'},{status:400}); const {id:_id,kind:_kind,createdAt:_at,...clean}=body.data; const data=JSON.stringify(clean); if(data.length>50000)return Response.json({error:'Registro demasiado grande'},{status:400}); const id=crypto.randomUUID(),createdAt=Date.now(); db().prepare('INSERT INTO records(id,owner_id,kind,data,created_at) VALUES(?,?,?,?,?)').run(id,'admin',body.kind,data,createdAt); return Response.json({record:{...clean,id,kind:body.kind,createdAt}},{status:201}); } catch(e) { return fail(e); }
+export async function PATCH(request:Request){
+  const user=await currentUser();if(!user)return deny();if(!sameOrigin(request))return Response.json({error:'Origen no permitido'},{status:403});
+  try {
+    const body=await readBody(request);if(typeof body.id!=='string')throw new AccessError('Registro inválido',400);
+    const row=rowsFor(user).find(r=>r.id===body.id);if(!row)throw new AccessError('Registro no encontrado',404);
+    const student=hasRole(user,'student');if(student&&row.kind!=='progress')throw new AccessError('Solo puedes modificar tus avances');
+    const data=student?studentProgress(user,{...JSON.parse(row.data),...cleanData(body.data)}):{...JSON.parse(row.data),...cleanData(body.data)};
+    if(JSON.stringify(data).length>50000)throw new AccessError('Registro demasiado grande',400);
+    validateReferences(row.kind,data,row.owner_id);db().prepare('UPDATE records SET data=? WHERE id=? AND owner_id=?').run(JSON.stringify(data),row.id,row.owner_id);
+    return Response.json(publicRecord({...row,data:JSON.stringify(data)},user));
+  }catch(e){return fail(e);}
 }
-export async function PATCH(request:Request) {
-  if (!(await authorized())) return deny();
-  try { const body:any=await request.json(); if(!body.id||!body.data||typeof body.data!=='object'||Array.isArray(body.data))return Response.json({error:'Registro inválido'},{status:400}); const row=db().prepare('SELECT data FROM records WHERE id=? AND owner_id=?').get(body.id,'admin') as {data:string}|undefined; if(!row)return Response.json({error:'Registro no encontrado'},{status:404}); const {id:_id,kind:_kind,createdAt:_at,...clean}=body.data; const merged={...JSON.parse(row.data),...clean},data=JSON.stringify(merged); if(data.length>50000)return Response.json({error:'Registro demasiado grande'},{status:400}); db().prepare('UPDATE records SET data=? WHERE id=? AND owner_id=?').run(data,body.id,'admin'); return Response.json({id:body.id,...merged}); } catch(e) { return fail(e); }
-}
-export async function DELETE(request:Request) {
-  if (!(await authorized())) return deny(); const id=new URL(request.url).searchParams.get('id'); if(!id)return Response.json({error:'Falta el ID'},{status:400}); try {db().prepare('DELETE FROM records WHERE id=? AND owner_id=?').run(id,'admin');return Response.json({ok:true});}catch(e){return fail(e);}
+export async function DELETE(request:Request){
+  const user=await currentUser();if(!user)return deny();if(!sameOrigin(request))return Response.json({error:'Origen no permitido'},{status:403});
+  try {
+    const id=new URL(request.url).searchParams.get('id');const row=rowsFor(user).find(r=>r.id===id);if(!row)throw new AccessError('Registro no encontrado',404);
+    if(hasRole(user,'student')&&row.kind!=='progress')throw new AccessError('Solo puedes eliminar tus avances');
+    if(row.kind==='athlete'&&db().prepare('SELECT id FROM users WHERE athlete_id=?').get(row.id))throw new AccessError('Este atleta tiene una cuenta vinculada. Conserva su ficha y desactiva el acceso en Usuarios',409);
+    db().prepare('DELETE FROM records WHERE id=? AND owner_id=?').run(row.id,row.owner_id);return Response.json({ok:true});
+  }catch(e){return fail(e);}
 }
